@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  # servicio de postgres
+  mongo:
+    image: mongo:latest
+    environment:
+      - MONGODB_DATABASE="test"
+    ports:
+      - 27017:27017
+    networks:
+      - net
+
+  # aplicacion de NestJS
+  api:
+    container_name: kenility-api
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+    command: npm run start:debug
+    ports:
+      - 8000:3000
+    tty: true
+    depends_on:
+      - mongo
+    networks:
+      - net
+
+volumes:
+  mongodbnew-data:
+
+networks:
+  net:
+    driver: bridge
